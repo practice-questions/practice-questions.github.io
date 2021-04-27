@@ -1,0 +1,86 @@
+<html>
+  <head>
+  </head>
+
+  <body onload="NewQuestion()">
+    <div id="question">
+    </div>
+    <div id="answers">
+      <div> A: <span id="answerA"></div> </div>
+      <div> B: <span id="answerB"></div> </div>
+      <div> C: <span id="answerC"></div> </div>
+      <div> D: <span id="answerD"></div> </div>
+    </div>
+    <div>
+      <button onclick="CheckAnswer('A')">A</button>
+      <button onclick="CheckAnswer('B')">B</button>
+      <button onclick="CheckAnswer('C')">C</button>
+      <button onclick="CheckAnswer('D')">D</button>
+    </div>
+    <div id="status"></div>
+    <div>
+      <button onclick="NewQuestion()">Next question</button>
+    </div>
+    <script>
+questions = [
+  {
+    "text": "What country has the callsign prefix 'S'?",
+    "correct": "Spain",
+    "wrong": ["Slovenia", "Poland", "Portugal"]
+  },
+  {
+    "text": "What country has the callsign prefix 'EU'?",
+    "correct": "Belarus",
+    "wrong": ["Spain", "Estonia", "Guernsey"]
+  },
+  {
+    "text": "What country has the callsign prefix 'SP'?",
+    "correct": "Poland",
+    "wrong": ["Slovenia", "Spain", "Portugal"]
+  },
+  {
+    "text": "What is the callsign of Iceland?",
+    "correct": "TF",
+    "wrong": ["I", "ISO", "OY"]
+  }
+]
+
+correct = 0
+wrong = 0
+
+function shuffle(array) {
+      for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
+
+function NewQuestion() {
+  question = questions[Math.floor(questions.length * Math.random())]
+
+  document.getElementById("status").innerHTML = ""
+
+  document.getElementById("question").innerHTML = question.text
+  order = ["answerA", "answerB", "answerC", "answerD"]
+  shuffle(order)
+  document.getElementById(order[0]).innerHTML = question.correct
+  document.getElementById(order[1]).innerHTML = question.wrong[0]
+  document.getElementById(order[2]).innerHTML = question.wrong[1]
+  document.getElementById(order[3]).innerHTML = question.wrong[2]
+}
+
+function CheckAnswer(answer) {
+  text = document.getElementById("answer"+answer).innerHTML
+  if (text == question.correct) {
+    correct += 1
+    document.getElementById("status").innerHTML = "Correct"
+  } else {
+    wrong += 1
+    document.getElementById("status").innerHTML = "Wrong"
+  }
+}
+    </script>
+  </body>
+</html>
