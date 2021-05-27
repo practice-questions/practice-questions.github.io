@@ -2,7 +2,12 @@
   <head>
   </head>
 
-  <body onload="NewQuestion()">
+  <body onload="OnLoad()">
+    <div id="sections">
+    </div>
+    <div id="scorebar">
+      Score: <span id="score">?</span> of <span id="count">?</span> = <span id=percent>?</span>%
+    </div>
     <div id="question">
     </div>
     <div id="answers">
@@ -17,36 +22,76 @@
       <button onclick="CheckAnswer('C')">C</button>
       <button onclick="CheckAnswer('D')">D</button>
     </div>
-    <div id="status"></div>
+    <div id="status">
+    </div>
     <div>
       <button onclick="NewQuestion()">Next question</button>
     </div>
     <script>
-questions = [
-  {
-    "text": "What country has the callsign prefix 'EA'?",
-    "correct": "Spain",
-    "wrong": ["Slovenia", "Poland", "Portugal"]
-  },
-  {
-    "text": "What country has the callsign prefix 'EU'?",
-    "correct": "Belarus",
-    "wrong": ["Spain", "Estonia", "Guernsey"]
-  },
-  {
-    "text": "What country has the callsign prefix 'SP'?",
-    "correct": "Poland",
-    "wrong": ["Slovenia", "Spain", "Portugal"]
-  },
-  {
-    "text": "What is the callsign of Iceland?",
-    "correct": "TF",
-    "wrong": ["I", "ISO", "OY"]
-  }
-]
 
+questions = {
+  "Country_Codes": [
+    {
+      "text": "What country has the callsign prefix 'EA'?",
+      "correct": "Spain",
+      "wrong": [
+        "Slovenia",
+        "Poland",
+        "Portugal"
+      ]
+    },
+    {
+      "text": "What country has the callsign prefix 'EU'?",
+      "correct": "Belarus",
+      "wrong": [
+        "Spain",
+        "Estonia",
+        "Guernsey"
+      ]
+    },
+    {
+      "text": "What country has the callsign prefix 'SP'?",
+      "correct": "Poland",
+      "wrong": [
+        "Slovenia",
+        "Spain",
+        "Portugal"
+      ]
+    },
+    {
+      "text": "What is the callsign of Iceland?",
+      "correct": "TF",
+      "wrong": [
+        "I",
+        "ISO",
+        "OY"
+      ]
+    }
+  ],
+  "Q_codes": [
+    {
+      "text": "What Q code means 'What is the readability of my signals?'",
+      "correct": "QRK",
+      "wrong": [
+        "QRL",
+        "QSO",
+        "QRV"
+      ]
+    },
+    {
+      "text": "What Q code means 'Are you being interfered with?'",
+      "correct": "QRM",
+      "wrong": [
+        "QRN",
+        "QRI",
+        "QSO"
+      ]
+    }
+  ]
+}
 correct = 0
 wrong = 0
+section = "Country Codes"
 
 function shuffle(array) {
       for (var i = array.length - 1; i > 0; i--) {
@@ -57,10 +102,25 @@ function shuffle(array) {
     }
 }
 
-function NewQuestion() {
-  question = questions[Math.floor(questions.length * Math.random())]
+function SetSection(s) {
+  section = s
+  NewQuestion()
+}
 
+function OnLoad() {
+  for (section in questions) {
+          text = `<button type=\"button\" onClick=SetSection(\"${section}\")>${section}</button> &nbsp;`
+    document.getElementById("sections").innerHTML += text
+  }
+
+  NewQuestion()
+}
+
+function NewQuestion() {
   document.getElementById("status").innerHTML = ""
+           
+  current_section = questions[section]
+  question = current_section[Math.floor(current_section.length * Math.random())]
 
   document.getElementById("question").innerHTML = question.text
   order = ["answerA", "answerB", "answerC", "answerD"]
@@ -69,6 +129,12 @@ function NewQuestion() {
   document.getElementById(order[1]).innerHTML = question.wrong[0]
   document.getElementById(order[2]).innerHTML = question.wrong[1]
   document.getElementById(order[3]).innerHTML = question.wrong[2]
+}
+
+function UpdateScore(correct, wrong) {
+  document.getElementById("score").innerHTML = correct
+  document.getElementById("count").innerHTML = correct + wrong
+  document.getElementById("percent").innerHTML = (correct / (correct + wrong)) * 100
 }
 
 function CheckAnswer(answer) {
@@ -80,6 +146,7 @@ function CheckAnswer(answer) {
     wrong += 1
     document.getElementById("status").innerHTML = "Wrong"
   }
+  UpdateScore(correct, wrong)
 }
     </script>
   </body>
